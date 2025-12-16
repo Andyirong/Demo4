@@ -1,0 +1,60 @@
+{
+  "commands": {
+    "archive": {
+      "description": "归档当前分支并创建新的开发分支",
+      "skill": "branch-archive",
+      "args": {
+        "optional": [
+          {
+            "name": "push",
+            "type": "boolean",
+            "default": true,
+            "description": "是否提交并推送当前分支"
+          },
+          {
+            "name": "newBranch",
+            "type": "boolean",
+            "default": true,
+            "description": "是否创建新的开发分支"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "description": "新分支的描述信息"
+          }
+        ]
+      },
+      "examples": [
+        "/archive",
+        "/archive --push=false",
+        "/archive --description='新功能开发'",
+        "/archive --push=false --new-branch=false"
+      ]
+    },
+    "archive-branch": {
+      "description": "归档指定分支",
+      "skill": "branch-archive",
+      "args": {
+        "required": [
+          {
+            "name": "branchName",
+            "type": "string",
+            "description": "要归档的分支名称"
+          }
+        ],
+        "optional": [
+          {
+            "name": "push",
+            "type": "boolean",
+            "default": false,
+            "description": "是否推送归档"
+          }
+        ]
+      },
+      "examples": [
+        "/archive-branch demo4-003",
+        "/archive-branch demo4-003 --push=true"
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "skills": {
+    "enabled": ["branch-archive"],
+    "autoLoad": true
+  },
+  "commands": {
+    "prefix": "/",
+    "caseSensitive": false
+  },
+  "project": {
+    "name": "Demo4",
+    "type": "typescript",
+    "framework": "react"
+  }
+}
