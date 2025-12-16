@@ -1,0 +1,75 @@
+# Git 提交详细信息
+
+## 分支信息
+- 当前分支：demo4-001
+- 远程分支：origin/demo4-001
+- 推送状态：已推送
+- Pull Request：https://github.com/Andyirong/Demo4/pull/new/demo4-001
+
+## 最新提交
+- 提交ID：e820e22
+- 提交信息：Add browser latency testing functionality and fix critical bugs
+- 提交日期：2025-12-16
+
+## 提交内容
+Add browser latency testing functionality and fix critical bugs
+
+## Features Added
+- Browser automation testing with Playwright
+- Latency measurement (FCP, LCP, load time)
+- Backend service for latency tests
+- Network condition simulation support
+
+## Bug Fixes
+- Fixed ResponseTimeChart missing Activity import
+- Added comprehensive logging for API requests
+
+## New Files
+- src/browser-automation.ts - Core browser automation
+- src/latency-test-service.ts - Test service management
+- server.js - Backend API service
+- components/LatencyTestPanel.tsx - UI component (in progress)
+
+## Dependencies
+- playwright, @playwright/test
+- express, cors
+- concurrently
+
+## Documentation
+- CHANGES.md - Detailed changelog
+- UPDATE_SUMMARY.md - Quick overview
+
+## 文件变更统计
+- 18 files changed
+- 5,331 insertions(+)
+- 483 deletions(-)
+
+## 变更类型分布
+- 新增文件：7个
+- 修改文件：9个
+- 配置文件：2个
+
+## 主要修改模块
+1. **浏览器自动化测试**
+   - 使用 Playwright 实现自动化测试
+   - 支持多种性能指标采集
+   - 提供网络条件模拟
+
+2. **后端服务**
+   - Express.js 服务支持
+   - RESTful API 接口
+   - 测试数据管理
+
+3. **前端界面**
+   - 新增延时测试标签页
+   - 修复图表组件错误
+   - 增强调试功能
+
+4. **依赖管理**
+   - 添加 Playwright 相关依赖
+   - 添加后端服务依赖
+   - 添加并发运行工具
+
+## Co-authored 信息
+Co-Authored-By: Claude <noreply@anthropic.com>
+Generated with Claude Code
