@@ -11,5 +11,38 @@
     "name": "Demo4",
     "type": "typescript",
     "framework": "react"
+  },
+  "directoryStructure": {
+    "description": "Demo4项目目录结构规范",
+    "directories": {
+      "source": "源代码主目录 - 包含App.tsx、components、services、types、utils等所有源代码文件（推荐使用）",
+      "components": "React组件目录 - 旧版本组件（FilterPanel、ResponseTimeChart、StatsCards等），将逐步迁移到source/",
+      "services": "API服务目录 - 旧版本API服务（apiService.ts），将逐步迁移到source/",
+      "docs": "项目文档目录 - 存放README.md、changelog等文档和说明",
+      "archives": "分支归档目录 - 存储每个demo4-XXX分支的完整归档（README、documentation、meta）",
+      "test-artifacts": "测试文件目录 - 包含测试用例、测试结果、playwright报告等",
+      "temp": "临时文件目录 - 存储所有生成的临时脚本和数据文件（已添加到.gitignore）",
+      ".claude": "Claude Code配置目录 - 包含claude.json、commands.json、skills/等配置文件"
+    },
+    "migrationStatus": {
+      "source": "active - 新代码的标准位置",
+      "components": "deprecated - 仅作兼容性保留，请使用source/",
+      "services": "deprecated - 仅作兼容性保留，请使用source/",
+      "recommendation": "所有新代码应创建在source/目录下"
+    },
+    "importPathRules": {
+      "oldStructure": {
+        "example": "import { FilterPanel } from './components/FilterPanel'",
+        "status": "deprecated - 不推荐使用"
+      },
+      "newStructure": {
+        "example": "import { FilterPanel } from '../source/components/FilterPanel'",
+        "status": "recommended - 标准做法"
+      },
+      "bestPractice": {
+        "example": "import { FilterPanel } from '@/components/FilterPanel'",
+        "status": "future - 需要配置路径别名"
+      }
+    }
   }
 }

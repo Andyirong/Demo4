@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node archive-current-branch.cjs:*)"
+      "Bash(node archive-current-branch.cjs:*)",
+      "Bash(git symbolic-ref:*)"
     ]
   }
 }
