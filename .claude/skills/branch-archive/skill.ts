@@ -480,4 +480,14 @@ ${date}
   }
 };
 
+// 如果直接运行此文件，执行归档操作
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+if (isMainModule) {
+  (async () => {
+    console.log('🚀 开始执行分支归档...');
+    const result = await branchArchiveSkill.execute();
+    console.log('\n✅ 归档结果:', result);
+  })().catch(console.error);
+}
+
 export default branchArchiveSkill;
