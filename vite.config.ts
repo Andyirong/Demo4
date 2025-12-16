@@ -8,6 +8,14 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          '/api': {
+            target: 'https://testnet-collect-esgrh0ke8fti72qw.pundix.com/collect',
+            changeOrigin: true,
+            secure: true,
+            rewrite: (path) => path
+          }
+        }
       },
       plugins: [react()],
       define: {

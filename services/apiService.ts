@@ -2,7 +2,12 @@
 import { TimeConsumingRecord, FilterCriteria, ApiCallDetail } from '../types';
 
 // Cast import.meta to any to fix TypeScript error "Property 'env' does not exist on type 'ImportMeta'"
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://testnet-collect-esgrh0ke8fti72qw.pundix.com/collect';
+// Use proxy in development, full URL in production
+const env = import.meta as any;
+const API_BASE_URL = env.env?.VITE_API_BASE_URL ||
+  (env.DEV ? '/api' : 'https://testnet-collect-esgrh0ke8fti72qw.pundix.com/collect');
+
+console.log("API_BASE_URL:", API_BASE_URL);
 
 // API Endpoint Configuration based on Swagger JSON
 const ENDPOINTS = {
@@ -73,13 +78,17 @@ async function fetchApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', bod
   }
 
   try {
+    console.log(`Making API request to: ${url}`, { method, body });
     const response = await fetch(url, options);
+
+    console.log(`API response status: ${response.status} ${response.statusText}`);
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     const json = await response.json() as ApiResponse<T>;
+    console.log(`API response data:`, json);
 
     // Swagger definitions usually return code 200 for success
     if (json.code !== 200) {
@@ -90,6 +99,17 @@ async function fetchApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', bod
     return json.data;
   } catch (error) {
     console.error(`Failed to fetch ${endpoint}:`, error);
+
+    // Re-throw with more context
+    if (error instanceof Error) {
+      if (error.message.includes('CORS')) {
+        throw new Error(`CORS Error: Unable to connect to API server. Please check if the server allows CORS requests.`);
+      }
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(`Network Error: Unable to connect to API server at ${API_BASE_URL}. Please check your network connection.`);
+      }
+    }
+
     throw error;
   }
 }
@@ -99,7 +119,10 @@ async function fetchApi<T>(endpoint: string, method: 'GET' | 'POST' = 'GET', bod
  * Endpoint: /api/timeConsuming/queryTimeConsumingAppKey (POST)
  */
 export const fetchProjects = async (): Promise<string[]> => {
-  return fetchApi<string[]>(ENDPOINTS.QUERY_APP_KEY, 'POST', {});
+  console.log("fetchProjects: Starting fetch...", { url: API_BASE_URL });
+  const result = await fetchApi<string[]>(ENDPOINTS.QUERY_APP_KEY, 'POST', {});
+  console.log("fetchProjects: Success", result);
+  return result;
 };
 
 /**
