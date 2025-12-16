@@ -320,11 +320,18 @@ ${date}
     const newBranchName = `demo4-${nextNumber}`;
 
     try {
-      // 切换到 main 分支并更新
-      execSync('git checkout main', { encoding: 'utf8' });
-      execSync('git pull origin main', { encoding: 'utf8' });
+      // 获取当前分支
+      let currentBranch: string;
+      try {
+        currentBranch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+      } catch {
+        const ref = execSync('git symbolic-ref -q HEAD', { encoding: 'utf8' }).trim();
+        currentBranch = ref.replace('refs/heads/', '');
+      }
 
-      // 创建并切换到新分支
+      console.log(`📌 基于 ${currentBranch} 分支创建新分支`);
+
+      // 直接从当前分支创建新分支（保留所有文件和配置）
       execSync(`git checkout -b ${newBranchName}`, { encoding: 'utf8' });
 
       // 推送新分支到远程（设置 upstream 但不创建 PR）
@@ -336,10 +343,12 @@ ${date}
       if (description) {
         console.log(`✅ 新分支 ${newBranchName} 已创建并推送`);
         console.log(`📝 描述: ${description}`);
-        console.log(`💡 分支已准备好进行开发，不会自动创建 PR`);
+        console.log(`💡 基于 ${currentBranch} 创建，保留所有配置和文件`);
+        console.log(`💡 不会自动创建 Pull Request`);
       } else {
         console.log(`✅ 新分支 ${newBranchName} 已创建并推送`);
-        console.log(`💡 分支已准备好进行开发，不会自动创建 PR`);
+        console.log(`💡 基于 ${currentBranch} 创建，保留所有配置和文件`);
+        console.log(`💡 不会自动创建 Pull Request`);
       }
 
       return newBranchName;
