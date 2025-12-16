@@ -1,0 +1,5 @@
+{
+  "name": "Performance Monitor",
+  "description": "A dashboard to visualize application response times and performance metrics based on time-consuming logs.",
+  "requestFramePermissions": []
+}
