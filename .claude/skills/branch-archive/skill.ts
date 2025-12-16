@@ -419,6 +419,11 @@ ${date}
 - 状态: 已完成并归档
 - 远程分支: 存在
 - 归档位置: archives/${branchName}/
+
+备注:
+- 本归档由 branch-archive skill 自动生成
+- 临时文件存储在 temp/ 目录
+- 归档完成后会自动清理临时文件
 `;
     fs.writeFileSync(path.join(metaPath, 'git-info.txt'), gitInfo);
 
