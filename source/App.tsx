@@ -6,7 +6,8 @@ import ResponseTimeChart from './components/ResponseTimeChart';
 import LatencyTestPanel from './components/LatencyTestPanel';
 import { FilterCriteria, TimeConsumingRecord, PerformanceStats } from './types';
 import { fetchPerformanceData, fetchTransactionDetails } from './services/apiService';
-import { LayoutDashboard, Search, BarChart3, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown, ChevronRight as ChevronIcon, Database, Loader2, Cpu, Activity, Zap, Shield, Globe } from 'lucide-react';
+import { LayoutDashboard, Search, BarChart3, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown, ChevronRight as ChevronIcon, Database, Loader2, Cpu, Activity, Zap, Shield, Globe, Info } from 'lucide-react';
+import { PrivyWalletButton } from './components/PrivyWalletButton';
 import './styles/index.css';
 
 function App() {
@@ -180,26 +181,27 @@ function App() {
   };
 
   return (
-    <>
-      {/* 科技感网格背景 */}
-      <div className="tech-grid"></div>
+    // <WalletProvider>
+      <>
+        {/* 科技感网格背景 */}
+        <div className="tech-grid"></div>
 
-      {/* 粒子背景效果 */}
-      <div className="particles">
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${10 + Math.random() * 10}s`
-            }}
-          />
-        ))}
-      </div>
+        {/* 粒子背景效果 */}
+        <div className="particles">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="particle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 10}s`,
+                animationDuration: `${10 + Math.random() * 10}s`
+              }}
+            />
+          ))}
+        </div>
 
-      <div className="min-h-screen relative">
+        <div className="min-h-screen relative">
         {/* Header */}
         <header className="glass sticky top-0 z-50 border-b border-blue-500/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-4">
@@ -232,11 +234,21 @@ function App() {
                 <Globe className="w-4 h-4 inline mr-2" />
                 延时测试
               </button>
+              <a
+                href="/about.html"
+                className="px-4 py-2 rounded-md text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-blue-500/20"
+              >
+                <Info className="w-4 h-4 inline mr-2" />
+                About
+              </a>
             </nav>
 
-            <div className="ml-auto flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
-              <span className="text-xs text-gray-400 uppercase tracking-wider">Live</span>
+            <div className="ml-auto flex items-center gap-4">
+              <PrivyWalletButton />
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-xs text-gray-400 uppercase tracking-wider">Live</span>
+              </div>
             </div>
           </div>
         </header>
@@ -482,7 +494,8 @@ function App() {
           )}
         </main>
       </div>
-    </>
+      </>
+    // </WalletProvider>
   );
 }
 
