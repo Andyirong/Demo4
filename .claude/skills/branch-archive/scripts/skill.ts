@@ -539,6 +539,38 @@ ${date}
       const archivePath = await this.createArchive(currentBranch, commitId);
       console.log(`✅ 归档文档生成完成: ${archivePath}`);
 
+      // 步骤2.5: 生成需求文档
+      let requirementDocs: { count: number; docs: any[] } = { count: 0, docs: [] };
+      if (requirements) {
+        console.log('📋 生成需求文档...');
+        try {
+          // 创建需求文档目录
+          const requirementsDir = path.join(archivePath, 'requirements');
+          fs.mkdirSync(requirementsDir, { recursive: true });
+
+          // 使用 RequirementGenerator 生成文档
+          const { RequirementGenerator } = await import('./requirement-generator');
+          const generator = new RequirementGenerator();
+
+          // 获取模板目录
+          const templateDir = path.join(__dirname, '..', 'templates');
+
+          // 生成需求文档
+          const docs = await generator.generate({
+            branchName: currentBranch,
+            commitRange: `HEAD~10..HEAD`,
+            outputDir: requirementsDir,
+            templateDir
+          });
+
+          requirementDocs = { count: docs.length, docs };
+          console.log(`✅ 已生成 ${docs.length} 个需求文档`);
+        } catch (error) {
+          console.error('❌ 生成需求文档失败:', error);
+          requirementDocs = { count: 0, docs: [] };
+        }
+      }
+
       // 步骤3: 添加所有修改和新增的文件到暂存区
       console.log('📚 添加文件到暂存区...');
       execSync('git add .', { encoding: 'utf8' });
