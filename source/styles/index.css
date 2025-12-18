@@ -785,3 +785,171 @@ body {
   background: linear-gradient(45deg, var(--primary-blue), var(--neon-blue));
   background-clip: content-box;
 }
+/* ===== 钱包相关样式 ===== */
+
+/* 钱包连接按钮动画 */
+@keyframes wallet-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--glow-blue);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--glow-blue), 0 0 30px var(--primary-blue);
+  }
+}
+
+/* 钱包模态框动画 */
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 钱包按钮样式增强 */
+.wallet-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.wallet-button:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+/* 钱包模态框样式 */
+.wallet-modal-backdrop {
+  backdrop-filter: blur(8px);
+  animation: modal-fade-in 0.3s ease-out;
+}
+
+.wallet-modal {
+  animation: modal-fade-in 0.3s ease-out;
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 0 30px var(--glow-blue);
+}
+
+/* 钱包选项悬停效果 */
+.wallet-option {
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-option::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.wallet-option:hover::after {
+  left: 100%;
+}
+
+/* 已连接钱包状态样式 */
+.wallet-connected {
+  background: linear-gradient(135deg, var(--bg-card), rgba(0, 255, 136, 0.1));
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.wallet-connected .wallet-address {
+  color: var(--success);
+  text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+}
+
+/* 复制成功提示 */
+.copy-success {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--success);
+  border-radius: 8px;
+  padding: 12px 20px;
+  color: var(--success);
+  font-size: 14px;
+  z-index: 1000;
+  animation: slide-in-right 0.3s ease-out;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 加载状态动画 */
+.wallet-loading {
+  position: relative;
+}
+
+.wallet-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* 响应式设计 - 钱包组件 */
+@media (max-width: 640px) {
+  .wallet-modal {
+    margin: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .wallet-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .wallet-button span {
+    display: none;
+  }
+
+  .wallet-info {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wallet-info button {
+    width: 100%;
+  }
+}

@@ -18,6 +18,16 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      optimizeDeps: {
+        // 排除有问题的包，让它们在运行时加载
+        exclude: ['@base-org/account'],
+        // 强制重新优化
+        force: true
+      },
+      esbuild: {
+        // 覆盖 esbuild 的目标
+        target: 'es2020'
       }
     };
 });

@@ -293,15 +293,40 @@ ${date}
     return content;
   },
 
+  // 获取项目名称
+  async getProjectName(): Promise<string> {
+    try {
+      // 方法1: 从 git remote 获取项目名称
+      const remoteUrl = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+      const urlParts = remoteUrl.split('/');
+      const repoName = urlParts[urlParts.length - 1];
+      const projectName = repoName.replace('.git', '');
+      return projectName;
+    } catch {
+      try {
+        // 方法2: 从当前目录名获取项目名称
+        const cwd = process.cwd();
+        return path.basename(cwd);
+      } catch {
+        // 方法3: 默认使用 'project'
+        return 'project';
+      }
+    }
+  },
+
   // 获取下一个分支编号
   async getNextBranchNumber(): Promise<string> {
     try {
       // 获取所有远程分支
       const branches = execSync('git branch -r', { encoding: 'utf8' });
       const branchNumbers: number[] = [];
+      const projectName = await this.getProjectName();
+
+      // 使用动态项目名称匹配分支
+      const branchPattern = new RegExp(`${projectName}-(\\d{3})`);
 
       branches.split('\n').forEach(branch => {
-        const match = branch.trim().match(/demo4-(\d{3})/);
+        const match = branch.trim().match(branchPattern);
         if (match) {
           branchNumbers.push(parseInt(match[1]));
         }
@@ -317,7 +342,8 @@ ${date}
   // 创建新分支
   async createNewBranch(description?: string): Promise<string> {
     const nextNumber = await this.getNextBranchNumber();
-    const newBranchName = `demo4-${nextNumber}`;
+    const projectName = await this.getProjectName();
+    const newBranchName = `${projectName}-${nextNumber}`;
 
     try {
       // 获取当前分支
@@ -430,6 +456,64 @@ ${date}
     return archivePath;
   },
 
+  // 生成动态提交信息
+  async generateCommitMessage(branchName: string): Promise<string> {
+    const changes = await this.analyzeChanges();
+    const files = await this.getChangedFiles();
+
+    let commitMessage = `feat: 完成${branchName}分支功能开发\n\n`;
+
+    // 添加功能描述
+    if (changes.features.length > 0) {
+      commitMessage += '✨ 新增功能:\n';
+      changes.features.forEach(feat => {
+        commitMessage += `- ${feat}\n`;
+      });
+      commitMessage += '\n';
+    }
+
+    // 添加修复内容
+    if (changes.fixes.length > 0) {
+      commitMessage += '🐛 Bug 修复:\n';
+      changes.fixes.forEach(fix => {
+        commitMessage += `- ${fix}\n`;
+      });
+      commitMessage += '\n';
+    }
+
+    // 添加文档更新
+    if (changes.docs.length > 0) {
+      commitMessage += '📚 文档更新:\n';
+      changes.docs.forEach(doc => {
+        commitMessage += `- ${doc}\n`;
+      });
+      commitMessage += '\n';
+    }
+
+    // 添加文件统计
+    commitMessage += `📊 统计信息:\n`;
+    commitMessage += `- 文件变更: ${files.length} 个\n`;
+
+    if (files.length > 0) {
+      commitMessage += `- 代码行数: ${await this.getLineCount()} 行新增\n`;
+    }
+
+    commitMessage += `\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>`;
+
+    return commitMessage;
+  },
+
+  // 获取代码行数统计
+  async getLineCount(): Promise<string> {
+    try {
+      const output = execSync('git diff --stat HEAD~1', { encoding: 'utf8' });
+      const match = output.match(/(\d+)\s*insertion/);
+      return match ? match[1] : '0';
+    } catch {
+      return '0';
+    }
+  },
+
   // 主执行函数
   async execute(args: SkillArgs = {}): Promise<any> {
     const { push = true, newBranch = true, description = '', branchName } = args;
@@ -437,28 +521,63 @@ ${date}
     try {
       console.log('\n🚀 开始分支归档流程...\n');
 
-      // 使用指定的分支名或获取当前分支
+      // 步骤1: 使用指定的分支名或获取当前分支
       const currentBranch = branchName || await this.getCurrentBranch();
       const commitId = await this.getCurrentCommit();
 
       console.log(`📦 归档分支: ${currentBranch}`);
       console.log(`📝 最新提交: ${commitId}`);
 
-      // 创建归档
+      // 步骤2: 创建归档目录结构和生成文档
+      console.log('📁 创建归档目录结构...');
       const archivePath = await this.createArchive(currentBranch, commitId);
-      console.log(`✅ 归档完成: ${archivePath}`);
+      console.log(`✅ 归档文档生成完成: ${archivePath}`);
 
-      // 提交并推送
+      // 步骤3: 添加所有修改和新增的文件到暂存区
+      console.log('📚 添加文件到暂存区...');
+      execSync('git add .', { encoding: 'utf8' });
+      console.log('✅ 已添加所有文件到暂存区');
+
+      // 步骤4: 创建提交，记录功能完成
+      console.log('💾 创建提交...');
+      const commitMessage = await this.generateCommitMessage(currentBranch);
+      execSync(`git commit -m "${commitMessage}"`, { encoding: 'utf8' });
+      console.log('✅ 提交创建完成');
+
+      // 步骤5: 提交并推送当前分支到远程
       if (push) {
-        await this.commitAndPush();
-        console.log('📤 已推送到远程仓库');
+        console.log('📤 推送当前分支到远程...');
+        execSync(`git push origin ${currentBranch}`, { encoding: 'utf8' });
+        console.log(`✅ 已推送到远程: ${currentBranch}`);
       }
 
-      // 创建新分支
+      // 步骤6: 确定项目名称并生成新分支编号
       let newBranchName: string | null = null;
       if (newBranch) {
-        newBranchName = await this.createNewBranch(description);
-        console.log(`🌱 新分支: ${newBranchName}`);
+        console.log('🔢 生成新分支编号...');
+        const projectName = await this.getProjectName();
+        const nextNumber = await this.getNextBranchNumber();
+        newBranchName = `${projectName}-${nextNumber}`;
+        console.log(`✅ 新分支名称: ${newBranchName}`);
+      }
+
+      // 步骤7: 创建并推送新开发分支
+      if (newBranch && newBranchName) {
+        console.log('🌱 创建新的开发分支...');
+
+        // 从当前分支创建新分支
+        execSync(`git checkout -b ${newBranchName}`, { encoding: 'utf8' });
+        console.log(`✅ 已从 ${currentBranch} 创建新分支 ${newBranchName}`);
+
+        // 推送新分支到远程
+        if (push) {
+          execSync(`git push -u origin ${newBranchName}`, {
+            encoding: 'utf8',
+            stdio: ['pipe', 'pipe', 'ignore'] // 忽略 stderr 输出，避免显示 PR 提示
+          });
+          console.log(`✅ 新分支已推送到远程: ${newBranchName}`);
+          console.log(`💡 可通过以下链接创建 PR: https://github.com/Andyirong/Pomodoro/pull/new/${newBranchName}`);
+        }
       }
 
       return {
