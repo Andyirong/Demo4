@@ -1,20 +1,163 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Demo4 - 性能监控系统
 
-# Run and deploy your AI Studio app
+一个基于 React + TypeScript 的网络性能监控系统，采用规范驱动开发（SDD）方法构建。
 
-This contains everything you need to run your app locally.
+## 📋 目录结构
 
-View your app in AI Studio: https://ai.studio/apps/drive/1z9B1dO6tMKG_J5bGRTxG98d0ss53waWV
+本项目采用标准化的目录结构，所有源代码统一在 `src/` 目录下：
 
-## Run Locally
+```
+demo4/
+├── src/                    # 📦 所有源代码
+│   ├── components/         # 🧩 React 组件
+│   │   ├── FilterPanel.tsx      # 过滤面板
+│   │   ├── ResponseTimeChart.tsx # 响应时间图表
+│   │   ├── StatsCards.tsx        # 统计卡片
+│   │   └── WalletConnector/      # 钱包连接器
+│   ├── services/          # 🔌 API 服务层
+│   │   ├── apiService.ts         # 主 API 服务
+│   │   ├── latency-test-service.ts # 延迟测试服务
+│   │   └── walletService.ts      # 钱包服务
+│   ├── context/           # 📦 React Context
+│   │   └── WalletContext.tsx     # 钱包上下文
+│   ├── styles/            # 🎨 样式文件
+│   │   └── index.css              # 主样式
+│   ├── types/             # 📝 TypeScript 类型定义
+│   │   ├── types.ts               # 通用类型
+│   │   └── wallet.ts             # 钱包类型
+│   ├── utils/             # 🛠️ 工具函数
+│   │   └── storage.ts            # 存储工具
+│   ├── App.tsx             # 🎯 主应用组件
+│   ├── index.tsx           # 🚪 应用入口
+│   └── vite-env.d.ts       # 📋 Vite 环境类型
+├── public/                # 🌐 静态资源
+│   ├── index.html              # 主页面
+│   └── about.html              # 关于页面
+├── .spec/                 # 📋 项目规范
+│   ├── index.md          # 规范索引
+│   ├── project-structure.md  # 目录结构规范
+│   └── changes/          # 规范变更历史
+├── docs/                  # 📚 项目文档
+└── archives/               # 📦 归档文件
+```
 
-**Prerequisites:**  Node.js
+### 📁 目录规范说明
 
+- **components/** - 所有 React UI 组件
+  - 组件文件使用 PascalCase.tsx 命名
+  - 相关的多个组件可以创建子目录
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **services/** - API 和业务逻辑服务
+  - 服务文件使用 camelCase.ts 或 camelCaseService.ts 命名
+
+- **utils/** - 可复用的工具函数
+  - 工具文件使用 camelCase.ts 命名
+
+- **types/** - TypeScript 类型定义
+  - 类型文件使用 camelCase.ts 命名
+
+- **context/** - React Context 状态管理
+  - Context 文件使用 PascalCase.tsx 命名
+
+## 🚀 快速开始
+
+### 前置要求
+
+- Node.js (v16 或更高版本)
+- npm 或 yarn
+
+### 安装和运行
+
+1. **克隆仓库**
+   ```bash
+   git clone [repository-url]
+   cd demo4
+   ```
+
+2. **安装依赖**
+   ```bash
+   npm install
+   ```
+
+3. **环境配置**
+   - 复制 `.env.example` 为 `.env`
+   - 配置必要的环境变量
+
+4. **启动开发服务器**
+   ```bash
+   npm run dev
+   ```
+
+   访问 http://localhost:3000 查看应用
+
+### 构建和部署
+
+```bash
+# 构建生产版本
+npm run build
+
+# 预览构建结果
+npm run preview
+```
+
+## 🛠️ 开发规范
+
+### 代码规范
+
+项目使用 ESLint 和 Prettier 确保代码质量和一致性：
+
+- ESLint 配置了 `eslint-plugin-boundaries` 强制目录结构规范
+- 保存时自动格式化代码
+- 提交前自动运行代码检查
+
+### 命名规范
+
+- **组件文件**: PascalCase.tsx (例: UserProfile.tsx)
+- **服务文件**: camelCase.ts (例: apiService.ts)
+- **工具文件**: camelCase.ts (例: storageUtils.ts)
+- **目录名**: camelCase (例: components/, services/)
+
+### 核心原则
+
+- 所有源代码必须在 `src/` 目录下
+- 按功能而非技术分层组织代码
+- 避免过度工程化，保持简洁
+- 遵循单一职责原则
+
+## 📚 相关文档
+
+- [项目规范索引](.spec/) - 所有规范文档
+- [项目目录规范](.spec/project-structure.md) - 目录组织规范
+- [API 文档](docs/api.md) (待添加)
+- [组件开发指南](docs/components.md) (待添加)
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
+
+请确保：
+- 遵循项目的代码规范
+- 通过所有 ESLint 检查
+- 添加必要的测试
+- 更新相关文档
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 🙏 致谢
+
+感谢以下开源项目：
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Recharts](https://recharts.org/)
+- [Lucide React](https://lucide.dev/)
+
+---
+
+*最后更新：2024-12-18*
