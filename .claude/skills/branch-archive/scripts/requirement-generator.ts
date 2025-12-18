@@ -66,18 +66,34 @@ export class RequirementGenerator {
    */
   private getCommits(branchName: string): any[] {
     try {
-      const output = execSync(`git log --oneline -20 ${branchName}`, { encoding: 'utf8' });
+      // 使用 HEAD 获取最近20次提交
+      const output = execSync('git log --oneline -20 HEAD', { encoding: 'utf8' });
       const lines = output.trim().split('\n');
+
+      if (lines.length === 0) {
+        console.log('⚠️  没有找到提交历史');
+        return [];
+      }
+
+      console.log(`📝 分析到 ${lines.length} 个提交`);
 
       return lines.map(line => {
         const [hash, ...messageParts] = line.split(' ');
+        const message = messageParts.join(' ');
+        const type = this.getCommitType(message);
+
+        if (type !== 'OTHER') {
+          console.log(`  - ${hash}: ${message} [${type}]`);
+        }
+
         return {
           hash,
-          message: messageParts.join(' '),
-          type: this.getCommitType(messageParts.join(' '))
+          message,
+          type
         };
       });
-    } catch {
+    } catch (error: any) {
+      console.error('❌ 获取提交历史失败:', error.message);
       return [];
     }
   }
