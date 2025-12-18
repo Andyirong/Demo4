@@ -2,7 +2,7 @@
   "commands": {
     "archive": {
       "description": "归档当前分支并创建新的开发分支",
-      "skill": "branch-archive",
+      "skill": "archive",
       "args": {
         "optional": [
           {
@@ -33,7 +33,7 @@
     },
     "archive-branch": {
       "description": "归档指定分支",
-      "skill": "branch-archive",
+      "skill": "archive",
       "args": {
         "required": [
           {
@@ -54,6 +54,42 @@
       "examples": [
         "/archive-branch demo4-003",
         "/archive-branch demo4-003 --push=true"
+      ]
+    },
+    "requirements": {
+      "description": "从Git提交历史生成需求文档",
+      "skill": "req-gen",
+      "args": {
+        "optional": [
+          {
+            "name": "output",
+            "type": "string",
+            "default": "./requirements",
+            "description": "输出目录"
+          },
+          {
+            "name": "branch",
+            "type": "string",
+            "description": "要分析的分支名称（默认当前分支）"
+          },
+          {
+            "name": "limit",
+            "type": "number",
+            "description": "限制分析的提交数量"
+          },
+          {
+            "name": "types",
+            "type": "string",
+            "description": "生成哪些类型的需求文档，用逗号分隔（PD,TD,QA,UI,OTHER）"
+          }
+        ]
+      },
+      "examples": [
+        "/requirements",
+        "/requirements --output=./docs/requirements",
+        "/requirements --branch=feature/user-login",
+        "/requirements --types=PD,QA",
+        "/requirements --limit=20"
       ]
     }
   }

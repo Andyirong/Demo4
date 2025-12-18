@@ -8,8 +8,13 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        sourcemap: false
       },
       plugins: [react()],
+      css: {
+        devSourcemap: false
+      },
+      sourcemap: false,
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
@@ -34,9 +39,11 @@ export default defineConfig(({ mode }) => {
         exclude: ['@base-org/account']
       },
       esbuild: {
-        target: 'es2020'
+        target: 'es2020',
+        sourcemap: false
       },
       build: {
+        sourcemap: false,
         rollupOptions: {
           external: [],
           output: {

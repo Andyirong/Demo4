@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { ContextAnalyzer } from './context-analyzer.js';
 
 // 在 ES 模块中获取 __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -29,34 +30,55 @@ export interface GenerationOptions {
 }
 
 export class RequirementGenerator {
+  private contextAnalyzer: ContextAnalyzer;
+
+  constructor() {
+    this.contextAnalyzer = new ContextAnalyzer();
+  }
+
   /**
    * 生成需求文档
    */
   async generate(options: GenerationOptions): Promise<RequirementDoc[]> {
     const docs: RequirementDoc[] = [];
 
-    // 1. 获取提交信息
+    // 1. 首先分析会话上下文
+    console.log('\n📊 第一步：整理当前聊天记录');
+    const contextSummary = this.contextAnalyzer.analyzeChatHistory();
+
+    // 输出上下文分析结果
+    console.log(this.contextAnalyzer.formatOutput(contextSummary));
+
+    // 生成上下文文档
+    const contextDoc = this.contextAnalyzer.generateContextDocument(contextSummary);
+    const contextFilePath = path.join(options.outputDir, 'CONTEXT-会话摘要.md');
+    fs.writeFileSync(contextFilePath, contextDoc, 'utf8');
+    console.log(`✅ 上下文文档已生成: ${contextFilePath}\n`);
+
+    // 2. 获取提交信息
+    console.log('📝 第二步：分析Git提交历史');
     const commits = this.getCommits(options.branchName);
     if (commits.length === 0) {
       console.log('ℹ️  没有找到需要分析的提交');
       return docs;
     }
 
-    // 2. 分析提交并分类
+    // 3. 分析提交并分类
     const analysis = this.analyzeCommits(commits);
 
-    // 3. 生成各类型的需求文档
+    // 4. 生成各类型的需求文档（结合上下文）
+    console.log('\n📄 第三步：生成需求文档');
     for (const [type, typeCommits] of Object.entries(analysis)) {
       if (typeCommits.length > 0) {
-        const doc = await this.generateDoc(type, typeCommits, options);
+        const doc = await this.generateDoc(type, typeCommits, options, contextSummary);
         if (doc) {
           docs.push(doc);
         }
       }
     }
 
-    // 4. 生成索引
-    await this.generateIndex(docs, options);
+    // 5. 生成索引
+    await this.generateIndex(docs, options, contextSummary);
 
     return docs;
   }
@@ -141,7 +163,12 @@ export class RequirementGenerator {
   /**
    * 生成单个需求文档
    */
-  private async generateDoc(type: string, commits: any[], options: GenerationOptions): Promise<RequirementDoc | null> {
+  private async generateDoc(
+    type: string,
+    commits: any[],
+    options: GenerationOptions,
+    contextSummary?: any
+  ): Promise<RequirementDoc | null> {
     if (commits.length === 0) return null;
 
     const typeNames = {
@@ -155,14 +182,15 @@ export class RequirementGenerator {
     const number = this.getNextNumber(type, options.outputDir);
     const title = this.generateTitle(commits, type);
 
-    // 简单的模板内容
+    // 增强的模板内容（包含上下文）
     const content = this.renderTemplate({
       type: typeNames[type] || type,
       number,
       title,
       branchName: options.branchName,
       commits,
-      timestamp: new Date().toLocaleString('zh-CN')
+      timestamp: new Date().toLocaleString('zh-CN'),
+      contextSummary
     });
 
     const fileName = `${type}-${number}-${this.sanitizeTitle(title)}.md`;
@@ -190,15 +218,27 @@ export class RequirementGenerator {
 - **生成时间**: ${data.timestamp}
 - **关联分支**: ${data.branchName}
 
-## 相关提交
-${data.commits.map(c => `- ${c.hash}: ${c.message}`).join('\n')}
+${data.contextSummary ? `
+## 会话上下文
+
+**会话主题**: ${data.contextSummary.sessionTitle}
+
+**关键要点**:
+${data.contextSummary.keyPoints.map((point: string) => `- ${point}`).join('\n')}
+
+**核心需求**:
+${data.contextSummary.requirements.map((req: string) => `- ${req}`).join('\n')}
+
+` : ''}## 相关提交
+${data.commits.map((c: any) => `- ${c.hash}: ${c.message}`).join('\n')}
 
 ## 功能概述
-基于提交历史分析生成的${data.type.toLowerCase()}文档。
+${data.contextSummary
+  ? `基于会话上下文"${data.contextSummary.sessionTitle}"和提交历史分析生成的${data.type.toLowerCase()}文档。结合了讨论中的关键需求和实际的开发提交记录。`
+  : `基于提交历史分析生成的${data.type.toLowerCase()}文档。`}
 
 ---
-*本文档由系统自动生成*
-`;
+*本文档由系统自动生成${data.contextSummary ? '，包含会话上下文分析' : ''}*`;
   }
 
   /**
@@ -262,10 +302,23 @@ ${data.commits.map(c => `- ${c.hash}: ${c.message}`).join('\n')}
   /**
    * 生成索引
    */
-  private async generateIndex(docs: RequirementDoc[], options: GenerationOptions): Promise<void> {
+  private async generateIndex(
+    docs: RequirementDoc[],
+    options: GenerationOptions,
+    contextSummary?: any
+  ): Promise<void> {
     const content = `# ${options.branchName} 需求文档索引
 
 生成时间: ${new Date().toLocaleString('zh-CN')}
+
+${contextSummary ? `
+## 会话上下文摘要
+
+**主题**: ${contextSummary.sessionTitle}
+
+${contextSummary.summary}
+
+` : ''}
 
 ## 文档列表
 
@@ -274,6 +327,7 @@ ${docs.map(doc => `- [${doc.title}](${path.basename(doc.filePath)})`).join('\n')
 ---
 
 总计: ${docs.length} 个文档
+${contextSummary ? '\n*包含会话上下文分析*' : ''}
 `;
 
     fs.writeFileSync(path.join(options.outputDir, 'index.md'), content, 'utf8');

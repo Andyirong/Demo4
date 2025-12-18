@@ -7,7 +7,7 @@ argument-hint: [--push=<boolean>] [--new-branch=<boolean>] [--description=<strin
 
 归档当前分支，可选择是否提交推送以及是否创建新的开发分支。
 
-该命令会执行 **branch-archive skill** 来完成归档操作。
+该命令会执行 **archive skill** 来完成归档操作。
 
 ## 参数说明
 - `--push`: 是否提交并推送当前分支（默认：true）
