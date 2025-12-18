@@ -4,7 +4,7 @@
 2025-12-18
 
 ## 文件变更统计
-- 变更文件数：17 个
+- 变更文件数：15 个
 
 ## 详细变更列表
 
@@ -29,52 +29,44 @@
    - 路径：archives/Demo4-001/meta/git-info.txt
    - 类型：未知类型
 
-6. **archives/Demo4-001/requirements/OTHER-003-其他需求.md**
-   - 路径：archives/Demo4-001/requirements/OTHER-003-其他需求.md
-   - 类型：未知类型
-
-7. **archives/Demo4-001/requirements/OTHER-005-其他需求.md**
+6. **archives/Demo4-001/requirements/OTHER-005-其他需求.md**
    - 路径：archives/Demo4-001/requirements/OTHER-005-其他需求.md
    - 类型：未知类型
 
-8. **archives/Demo4-001/requirements/PD-001-产品功能需求.md**
+7. **archives/Demo4-001/requirements/PD-001-产品功能需求.md**
    - 路径：archives/Demo4-001/requirements/PD-001-产品功能需求.md
    - 类型：未知类型
 
-9. **archives/Demo4-001/requirements/QA-003-质量改进需求 - 修复.md**
+8. **archives/Demo4-001/requirements/QA-003-质量改进需求 - 修复.md**
    - 路径：archives/Demo4-001/requirements/QA-003-质量改进需求 - 修复.md
    - 类型：未知类型
 
-10. **archives/Demo4-001/requirements/UI-004-界面优化需求.md**
+9. **archives/Demo4-001/requirements/UI-004-界面优化需求.md**
    - 路径：archives/Demo4-001/requirements/UI-004-界面优化需求.md
    - 类型：未知类型
 
-11. **archives/Demo4-001/requirements/index.md**
+10. **archives/Demo4-001/requirements/index.md**
    - 路径：archives/Demo4-001/requirements/index.md
    - 类型：未知类型
 
-12. **archives/Demo4-002/README.md**
+11. **archives/Demo4-002/README.md**
    - 路径：archives/Demo4-002/README.md
    - 类型：文档文件
 
-13. **archives/Demo4-002/documentation/file-list.md**
+12. **archives/Demo4-002/documentation/file-list.md**
    - 路径：archives/Demo4-002/documentation/file-list.md
    - 类型：未知类型
 
-14. **archives/Demo4-002/meta/git-info.txt**
+13. **archives/Demo4-002/meta/git-info.txt**
    - 路径：archives/Demo4-002/meta/git-info.txt
+   - 类型：未知类型
+
+14. **archives/Demo4-002/requirements/OTHER-005-其他需求.md**
+   - 路径：archives/Demo4-002/requirements/OTHER-005-其他需求.md
    - 类型：未知类型
 
 15. **archives/Demo4-002/requirements/PD-001-产品功能需求.md**
    - 路径：archives/Demo4-002/requirements/PD-001-产品功能需求.md
-   - 类型：未知类型
-
-16. **archives/Demo4-002/requirements/TD-002-技术优化需求 - 优化.md**
-   - 路径：archives/Demo4-002/requirements/TD-002-技术优化需求 - 优化.md
-   - 类型：未知类型
-
-17. **archives/Demo4-002/requirements/index.md**
-   - 路径：archives/Demo4-002/requirements/index.md
    - 类型：未知类型
 
 ## 备注

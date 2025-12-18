@@ -705,7 +705,7 @@ ${date}
       console.log(`📦 归档分支: ${currentBranch}`);
       console.log(`📝 最新提交: ${commitId}`);
 
-      // 步骤2: 创建归档目录结构和生成文档
+      // 步骤2: 创建归档目录结构
       console.log('📁 创建归档目录结构...');
       const archivePath = await this.createArchive(currentBranch, commitId);
       console.log(`✅ 归档文档生成完成: ${archivePath}`);
@@ -776,6 +776,18 @@ ${date}
           } catch (error) {
             console.error('⚠️ 复制需求文档到归档目录失败:', error);
           }
+        }
+      }
+
+      // 步骤2.6: 重新生成包含需求信息的 README
+      if (requirements) {
+        console.log('📝 重新生成包含需求信息的 README...');
+        try {
+          const readme = await this.generateReadme(currentBranch, commitId);
+          fs.writeFileSync(path.join(archivePath, 'README.md'), readme);
+          console.log('✅ README 已更新');
+        } catch (error) {
+          console.error('❌ 更新 README 失败:', error);
         }
       }
 

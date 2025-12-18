@@ -6,15 +6,50 @@
 ## 归档信息
 - **归档日期**：2025-12-18
 - **分支名称**：Demo4-002
-- **最新提交ID**：084bddcf4cb2bc9f7b5a44146e0062c10d2feca6
+- **最新提交ID**：aeab1114ce08fd3c56a1ec0fd6948688e2169ce1
 - **状态**：已完成并归档
 
 ## 需求变更总览
-暂无需求文档
+本分支包含5个需求：1个产品需求、1个技术需求、1个质量需求、1个界面需求、1个其他需求
+
+### 📋 需求详情
+
+#### 📌 其他需求 (OTHER)
+
+- **其他需求**
+  基于提交历史分析，此需求涉及以下功能点：
+  - 相关提交：c1a4d34 - Merge branch 'Demo4-022' into main, 333793e - Merge pull request #4 from Andyirong/Demo4-022, 1492146 - chore: 禁用sourcemap以消除第三方包警告
+  - 及其他 7 个提交
+
+#### 🎯 产品需求 (PD)
+
+- **产品功能需求**
+  基于提交历史分析，此需求涉及以下功能点：
+  - 相关提交：084bddc - (HEAD -> Demo4-002, origin/Demo4-002, origin/Demo4-001, Demo4-001) feat: 完成Demo4-001分支功能开发, db0f162 - (origin/main, main) feat: 完成Demo4-002分支功能开发, 92e795f - feat: 完成Demo4-001分支功能开发
+  - 及其他 16 个提交
+
+#### 🐛 质量需求 (QA)
+
+- **质量改进需求 - 修复**
+  基于提交历史分析，此需求涉及以下功能点：
+  - 相关提交：e987530 - fix: 修复 __dirname 问题，恢复需求文档生成功能, e19c238 - 修复入口文件引用路径：更新 index.html 中的脚本路径, f02d783 - 修复样式文件引用路径：更新 index.html 中的 CSS 链接
+
+#### ⚙️ 技术需求 (TD)
+
+- **技术优化需求 - 优化**
+  基于提交历史分析，此需求涉及以下功能点：
+  - 相关提交：162d78e - 归档  分支：Skill 流程优化
+
+#### 🎨 界面需求 (UI)
+
+- **界面优化需求**
+  基于提交历史分析，此需求涉及以下功能点：
+  - 相关提交：e520f9c - chore: 清理 test-requirements 归档目录, 4086656 - 恢复丢失的样式文件：从 demo4-003 合并 source/styles/index.css
 
 ## 主要变更内容
 
 ### ✨ 新增功能
+- feat: 完成Demo4-002分支功能开发
 - feat: 完成Demo4-001分支功能开发
 - feat: 完成Demo4-002分支功能开发
 - feat: 完成Demo4-001分支功能开发
@@ -28,7 +63,6 @@
 - feat: 完成Demo4-015分支功能开发
 - feat: 完成Demo4-014分支功能开发
 - feat: 完成Demo4-013分支功能开发
-- feat: 完成Demo4-012分支功能开发
 
 ### 🐛 Bug 修复
 - fix: 修复 __dirname 问题，恢复需求文档生成功能
@@ -43,7 +77,7 @@
 - 清理多余文件：删除旧的归档目录和不需要的脚本文件
 
 ## 文件变更统计
-- 修改文件数：17 个
+- 修改文件数：15 个
 
 ### 主要文件
 - .claude/skills/archive/scripts/skill.ts
@@ -51,12 +85,12 @@
 - .claude/skills/req-gen/scripts/requirements.cjs
 - archives/Demo4-001/README.md
 - archives/Demo4-001/meta/git-info.txt
-- archives/Demo4-001/requirements/OTHER-003-其他需求.md
 - archives/Demo4-001/requirements/OTHER-005-其他需求.md
 - archives/Demo4-001/requirements/PD-001-产品功能需求.md
 - archives/Demo4-001/requirements/QA-003-质量改进需求 - 修复.md
 - archives/Demo4-001/requirements/UI-004-界面优化需求.md
-- ...及其他 7 个文件
+- archives/Demo4-001/requirements/index.md
+- ...及其他 5 个文件
 
 ## 归档结构
 ```
