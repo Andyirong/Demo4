@@ -7,6 +7,11 @@ import { execSync, spawn } from 'child_process';
 import { Readable } from 'stream';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// 在 ES 模块中获取 __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface SkillArgs {
   push?: boolean;
