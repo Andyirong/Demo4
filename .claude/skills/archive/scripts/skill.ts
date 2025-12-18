@@ -544,35 +544,102 @@ ${date}
       const archivePath = await this.createArchive(currentBranch, commitId);
       console.log(`✅ 归档文档生成完成: ${archivePath}`);
 
-      // 步骤2.5: 生成需求文档
+      // 步骤2.5: 处理需求文档
       let requirementDocs: { count: number; docs: any[] } = { count: 0, docs: [] };
       if (requirements) {
-        console.log('📋 生成需求文档...');
+        console.log('📋 处理需求文档...');
+
+        // 首先检查是否已有需求文档
+        const existingRequirementsDir = path.join('archives', currentBranch, 'requirements');
+        let hasExistingDocs = false;
+
         try {
-          // 创建需求文档目录
-          const requirementsDir = path.join(archivePath, 'requirements');
-          fs.mkdirSync(requirementsDir, { recursive: true });
+          if (fs.existsSync(existingRequirementsDir)) {
+            const existingFiles = fs.readdirSync(existingRequirementsDir)
+              .filter(file => file.endsWith('.md') && file !== 'index.md');
 
-          // 使用 RequirementGenerator 生成文档
-          const { RequirementGenerator } = await import('./requirement-generator');
-          const generator = new RequirementGenerator();
+            if (existingFiles.length > 0) {
+              console.log(`📖 发现已有的需求文档: ${existingFiles.length} 个`);
+              console.log('📑 读取已有需求文档...');
 
-          // 获取模板目录
-          const templateDir = path.join(__dirname, '..', 'templates');
+              // 读取已有的需求文档
+              requirementDocs = {
+                count: existingFiles.length,
+                docs: existingFiles.map(file => {
+                  const filePath = path.join(existingRequirementsDir, file);
+                  const content = fs.readFileSync(filePath, 'utf8');
+                  return {
+                    fileName: file,
+                    content: content,
+                    path: filePath
+                  };
+                })
+              };
 
-          // 生成需求文档
-          const docs = await generator.generate({
-            branchName: currentBranch,
-            commitRange: `HEAD~10..HEAD`,
-            outputDir: requirementsDir,
-            templateDir
-          });
-
-          requirementDocs = { count: docs.length, docs };
-          console.log(`✅ 已生成 ${docs.length} 个需求文档`);
+              console.log(`✅ 已读取 ${existingFiles.length} 个需求文档`);
+              hasExistingDocs = true;
+            }
+          }
         } catch (error) {
-          console.error('❌ 生成需求文档失败:', error);
-          requirementDocs = { count: 0, docs: [] };
+          console.error('⚠️ 读取已有需求文档失败:', error);
+        }
+
+        // 如果没有已有文档，则生成新的需求文档
+        if (!hasExistingDocs) {
+          console.log('📝 生成新的需求文档...');
+          try {
+            // 执行 requirements 命令生成文档
+            execSync(`node .claude/skills/req-gen/requirements.cjs --branch=${currentBranch}`, {
+              encoding: 'utf8',
+              cwd: process.cwd()
+            });
+
+            // 读取生成的需求文档
+            const requirementsDir = path.join('archives', currentBranch, 'requirements');
+            if (fs.existsSync(requirementsDir)) {
+              const generatedFiles = fs.readdirSync(requirementsDir)
+                .filter(file => file.endsWith('.md') && file !== 'index.md');
+
+              if (generatedFiles.length > 0) {
+                requirementDocs = {
+                  count: generatedFiles.length,
+                  docs: generatedFiles.map(file => {
+                    const filePath = path.join(requirementsDir, file);
+                    const content = fs.readFileSync(filePath, 'utf8');
+                    return {
+                      fileName: file,
+                      content: content,
+                      path: filePath
+                    };
+                  })
+                };
+                console.log(`✅ 已生成并读取 ${generatedFiles.length} 个新需求文档`);
+              }
+            }
+          } catch (error) {
+            console.error('❌ 生成需求文档失败:', error);
+            requirementDocs = { count: 0, docs: [] };
+          }
+        }
+
+        // 将需求文档复制到归档目录中（如果不在同一位置）
+        const archiveRequirementsDir = path.join(archivePath, 'requirements');
+        if (fs.existsSync(existingRequirementsDir) && existingRequirementsDir !== archiveRequirementsDir) {
+          try {
+            // 复制所有需求文档到归档目录
+            fs.mkdirSync(archiveRequirementsDir, { recursive: true });
+            const filesToCopy = fs.readdirSync(existingRequirementsDir);
+
+            for (const file of filesToCopy) {
+              const srcPath = path.join(existingRequirementsDir, file);
+              const destPath = path.join(archiveRequirementsDir, file);
+              fs.copyFileSync(srcPath, destPath);
+            }
+
+            console.log(`✅ 已将需求文档复制到归档目录`);
+          } catch (error) {
+            console.error('⚠️ 复制需求文档到归档目录失败:', error);
+          }
         }
       }
 

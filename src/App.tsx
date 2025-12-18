@@ -4,14 +4,15 @@ import FilterPanel from './components/FilterPanel';
 import StatsCards from './components/StatsCards';
 import ResponseTimeChart from './components/ResponseTimeChart';
 import LatencyTestPanel from './components/LatencyTestPanel';
-import { FilterCriteria, TimeConsumingRecord, PerformanceStats } from './types';
+import TailwindTest from './components/TailwindTest';
+import { FilterCriteria, TimeConsumingRecord, PerformanceStats } from './types/types';
 import { fetchPerformanceData, fetchTransactionDetails } from './services/apiService';
-import { LayoutDashboard, Search, BarChart3, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown, ChevronRight as ChevronIcon, Database, Loader2, Cpu, Activity, Zap, Shield, Globe, Info } from 'lucide-react';
+import { LayoutDashboard, Search, BarChart3, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronDown, ChevronRight as ChevronIcon, Database, Loader2, Cpu, Activity, Zap, Shield, Globe, Info, Palette } from 'lucide-react';
 import { PrivyWalletButton } from './components/PrivyWalletButton';
 import './styles/index.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'performance' | 'latency'>('performance');
+  const [activeTab, setActiveTab] = useState<'performance' | 'latency' | 'tailwind'>('performance');
   const [loading, setLoading] = useState<boolean>(false);
   const [hasFetched, setHasFetched] = useState<boolean>(false);
   const [data, setData] = useState<TimeConsumingRecord[]>([]);
@@ -233,6 +234,17 @@ function App() {
               >
                 <Globe className="w-4 h-4 inline mr-2" />
                 延时测试
+              </button>
+              <button
+                onClick={() => setActiveTab('tailwind')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  activeTab === 'tailwind'
+                    ? 'bg-purple-500 text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white hover:bg-purple-500/20'
+                }`}
+              >
+                <Palette className="w-4 h-4 inline mr-2" />
+                Tailwind 测试
               </button>
               <a
                 href="/about.html"
@@ -489,8 +501,10 @@ function App() {
                 </>
               )}
             </>
-          ) : (
+          ) : activeTab === 'latency' ? (
             <LatencyTestPanel />
+          ) : (
+            <TailwindTest />
           )}
         </main>
       </div>
