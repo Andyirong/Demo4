@@ -6,7 +6,7 @@
 ## 归档信息
 - **归档日期**：2025-12-18
 - **分支名称**：Demo4-002
-- **最新提交ID**：aeab1114ce08fd3c56a1ec0fd6948688e2169ce1
+- **最新提交ID**：5c962ac6125218f4d5fd49ef902af05d332375ce
 - **状态**：已完成并归档
 
 ## 需求变更总览
@@ -25,8 +25,8 @@
 
 - **产品功能需求**
   基于提交历史分析，此需求涉及以下功能点：
-  - 相关提交：084bddc - (HEAD -> Demo4-002, origin/Demo4-002, origin/Demo4-001, Demo4-001) feat: 完成Demo4-001分支功能开发, db0f162 - (origin/main, main) feat: 完成Demo4-002分支功能开发, 92e795f - feat: 完成Demo4-001分支功能开发
-  - 及其他 16 个提交
+  - 相关提交：5c962ac - (HEAD -> Demo4-002) feat: 完成Demo4-002分支功能开发, aeab111 - feat: 完成Demo4-002分支功能开发, 084bddc - (origin/Demo4-002, origin/Demo4-001, Demo4-001) feat: 完成Demo4-001分支功能开发
+  - 及其他 18 个提交
 
 #### 🐛 质量需求 (QA)
 
@@ -50,6 +50,7 @@
 
 ### ✨ 新增功能
 - feat: 完成Demo4-002分支功能开发
+- feat: 完成Demo4-002分支功能开发
 - feat: 完成Demo4-001分支功能开发
 - feat: 完成Demo4-002分支功能开发
 - feat: 完成Demo4-001分支功能开发
@@ -62,7 +63,6 @@
 - feat: 完成Demo4-016分支功能开发
 - feat: 完成Demo4-015分支功能开发
 - feat: 完成Demo4-014分支功能开发
-- feat: 完成Demo4-013分支功能开发
 
 ### 🐛 Bug 修复
 - fix: 修复 __dirname 问题，恢复需求文档生成功能

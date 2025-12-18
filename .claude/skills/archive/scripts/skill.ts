@@ -687,7 +687,7 @@ ${date}
 
   // 主执行函数
   async execute(args: SkillArgs = {}): Promise<any> {
-    const { push = false, newBranch = false, description = '', branchName } = args;
+    const { push = true, newBranch = true, description = '', branchName } = args;
   const requirements = true;  // 固定为 true，用于测试 README 生成
 
     try {
