@@ -153,11 +153,127 @@ const branchArchiveSkill = {
     }
   },
 
+  // 从需求文档提取变更信息
+  async extractRequirementInfo(branchName: string): Promise<{
+    summary: string;
+    requirements: Array<{
+      type: string;
+      title: string;
+      description: string;
+      commits: string[];
+    }>;
+  }> {
+    const requirementsDir = path.join('archives', branchName, 'requirements');
+
+    if (!fs.existsSync(requirementsDir)) {
+      return {
+        summary: '暂无需求文档',
+        requirements: []
+      };
+    }
+
+    const requirements: Array<{
+      type: string;
+      title: string;
+      description: string;
+      commits: string[];
+    }> = [];
+
+    try {
+      const files = fs.readdirSync(requirementsDir)
+        .filter(file => file.endsWith('.md') && file !== 'index.md');
+
+      for (const file of files) {
+        const filePath = path.join(requirementsDir, file);
+        const content = fs.readFileSync(filePath, 'utf8');
+
+        // 解析需求文档
+        const typeMatch = file.match(/^(PD|TD|QA|UI|OTHER)-\d+/);
+        const type = typeMatch ? typeMatch[1] : 'OTHER';
+
+        // 提取标题
+        const titleMatch = content.match(/^#\s+(.+)$/m);
+        const title = titleMatch ? titleMatch[1] : file.replace('.md', '');
+
+        // 提取功能概述
+        const overviewMatch = content.match(/## 功能概述\s*\n\n(.+?)(?=\n\n|\n#|$)/s);
+        const description = overviewMatch ? overviewMatch[1].trim() : '暂无描述';
+
+        // 提取相关提交
+        const commitSection = content.match(/## 相关提交\s*\n\n(.+?)(?=\n\n|\n#|$)/s);
+        let commits: string[] = [];
+        if (commitSection) {
+          commits = commitSection[1]
+            .split('\n')
+            .filter(line => line.trim().startsWith('-'))
+            .map(line => line.trim().replace(/^-\s*/, ''));
+        }
+
+        requirements.push({
+          type,
+          title,
+          description,
+          commits
+        });
+      }
+    } catch (error) {
+      console.error('读取需求文档失败:', error);
+    }
+
+    // 生成需求总结
+    const summary = this.generateRequirementSummary(requirements);
+
+    return {
+      summary,
+      requirements
+    };
+  },
+
+  // 生成需求总结
+  generateRequirementSummary(requirements: Array<any>): string {
+    if (requirements.length === 0) {
+      return '本分支暂无需求文档';
+    }
+
+    const typeCounts = {
+      PD: 0,
+      TD: 0,
+      QA: 0,
+      UI: 0,
+      OTHER: 0
+    };
+
+    requirements.forEach(req => {
+      typeCounts[req.type as keyof typeof typeCounts]++;
+    });
+
+    const summaryParts: string[] = [];
+
+    if (typeCounts.PD > 0) {
+      summaryParts.push(`${typeCounts.PD}个产品需求`);
+    }
+    if (typeCounts.TD > 0) {
+      summaryParts.push(`${typeCounts.TD}个技术需求`);
+    }
+    if (typeCounts.QA > 0) {
+      summaryParts.push(`${typeCounts.QA}个质量需求`);
+    }
+    if (typeCounts.UI > 0) {
+      summaryParts.push(`${typeCounts.UI}个界面需求`);
+    }
+    if (typeCounts.OTHER > 0) {
+      summaryParts.push(`${typeCounts.OTHER}个其他需求`);
+    }
+
+    return `本分支包含${requirements.length}个需求：${summaryParts.join('、')}`;
+  },
+
   // 生成 README 内容
   async generateReadme(branchName: string, commitId: string): Promise<string> {
     const date = new Date().toISOString().split('T')[0];
     const changes = await this.analyzeChanges();
     const files = await this.getChangedFiles();
+    const requirementInfo = await this.extractRequirementInfo(branchName);
 
     let content = `# ${branchName} 分支归档
 
@@ -170,7 +286,47 @@ const branchArchiveSkill = {
 - **最新提交ID**：${commitId}
 - **状态**：已完成并归档
 
-## 主要变更内容
+## 需求变更总览
+${requirementInfo.summary}
+`;
+
+    // 添加详细需求信息
+    if (requirementInfo.requirements.length > 0) {
+      content += '\n### 📋 需求详情\n';
+
+      // 按类型分组
+      const grouped = requirementInfo.requirements.reduce((acc, req) => {
+        if (!acc[req.type]) {
+          acc[req.type] = [];
+        }
+        acc[req.type].push(req);
+        return acc;
+      }, {} as Record<string, typeof requirementInfo.requirements>);
+
+      const typeNames = {
+        PD: '🎯 产品需求 (PD)',
+        TD: '⚙️ 技术需求 (TD)',
+        QA: '🐛 质量需求 (QA)',
+        UI: '🎨 界面需求 (UI)',
+        OTHER: '📌 其他需求 (OTHER)'
+      };
+
+      for (const [type, reqs] of Object.entries(grouped)) {
+        content += `\n#### ${typeNames[type as keyof typeof typeNames]}\n`;
+        reqs.forEach(req => {
+          content += `\n- **${req.title}**\n`;
+          content += `  ${req.description}\n`;
+          if (req.commits.length > 0) {
+            content += `  - 相关提交：${req.commits.slice(0, 3).join(', ')}\n`;
+            if (req.commits.length > 3) {
+              content += `  - 及其他 ${req.commits.length - 3} 个提交\n`;
+            }
+          }
+        });
+      }
+    }
+
+    content += `\n## 主要变更内容
 `;
 
     // 根据实际变更生成内容
@@ -235,6 +391,13 @@ const branchArchiveSkill = {
 \`\`\`
 archives/${branchName}/
 ├── README.md                 # 本文件
+├── requirements/             # 需求文档目录
+│   ├── PD-*.md              # 产品需求
+│   ├── TD-*.md              # 技术需求
+│   ├── QA-*.md              # 质量需求
+│   ├── UI-*.md              # 界面需求
+│   ├── OTHER-*.md           # 其他需求
+│   └── index.md             # 需求文档索引
 ├── documentation/           # 文档目录
 │   └── file-list.md         # 完整文件变更清单
 └── meta/                    # 元信息目录
@@ -243,6 +406,9 @@ archives/${branchName}/
 
 ## 注意事项
 本归档由自动化工具生成，记录了分支开发过程中的所有重要变更，用于后续参考和审计。
+
+## 查看需求文档
+详细的需求文档请查看 \`requirements/\` 目录下的各个文件。
 `;
 
     return content;
@@ -521,7 +687,8 @@ ${date}
 
   // 主执行函数
   async execute(args: SkillArgs = {}): Promise<any> {
-    const { push = true, newBranch = true, description = '', branchName, requirements = true } = args;
+    const { push = false, newBranch = false, description = '', branchName } = args;
+  const requirements = true;  // 固定为 true，用于测试 README 生成
 
     try {
       console.log('\n🚀 开始分支归档流程...');
@@ -544,7 +711,6 @@ ${date}
       console.log(`✅ 归档文档生成完成: ${archivePath}`);
 
       // 步骤2.5: 处理需求文档
-      let requirementDocs: { count: number; docs: any[] } = { count: 0, docs: [] };
       if (requirements) {
         console.log('📋 处理需求文档...');
 
@@ -559,22 +725,6 @@ ${date}
 
             if (existingFiles.length > 0) {
               console.log(`📖 发现已有的需求文档: ${existingFiles.length} 个`);
-              console.log('📑 读取已有需求文档...');
-
-              // 读取已有的需求文档
-              requirementDocs = {
-                count: existingFiles.length,
-                docs: existingFiles.map(file => {
-                  const filePath = path.join(existingRequirementsDir, file);
-                  const content = fs.readFileSync(filePath, 'utf8');
-                  return {
-                    fileName: file,
-                    content: content,
-                    path: filePath
-                  };
-                })
-              };
-
               console.log(`✅ 已读取 ${existingFiles.length} 个需求文档`);
               hasExistingDocs = true;
             }
@@ -600,24 +750,11 @@ ${date}
                 .filter(file => file.endsWith('.md') && file !== 'index.md');
 
               if (generatedFiles.length > 0) {
-                requirementDocs = {
-                  count: generatedFiles.length,
-                  docs: generatedFiles.map(file => {
-                    const filePath = path.join(requirementsDir, file);
-                    const content = fs.readFileSync(filePath, 'utf8');
-                    return {
-                      fileName: file,
-                      content: content,
-                      path: filePath
-                    };
-                  })
-                };
                 console.log(`✅ 已生成并读取 ${generatedFiles.length} 个新需求文档`);
               }
             }
           } catch (error) {
             console.error('❌ 生成需求文档失败:', error);
-            requirementDocs = { count: 0, docs: [] };
           }
         }
 
