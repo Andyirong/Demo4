@@ -3,7 +3,8 @@
  * 分支归档自动化工具
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
+import { Readable } from 'stream';
 import * as fs from 'fs';
 import * as path from 'path';
 
