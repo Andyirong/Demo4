@@ -3,8 +3,7 @@
  * 分支归档自动化工具
  */
 
-import { execSync, spawn } from 'child_process';
-import { Readable } from 'stream';
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -589,7 +588,7 @@ ${date}
           console.log('📝 生成新的需求文档...');
           try {
             // 执行 requirements 命令生成文档
-            execSync(`node .claude/skills/req-gen/requirements.cjs --branch=${currentBranch}`, {
+            execSync(`node .claude/skills/req-gen/scripts/requirements.cjs --branch=${currentBranch}`, {
               encoding: 'utf8',
               cwd: process.cwd()
             });

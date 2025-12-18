@@ -6,12 +6,14 @@
 ## 归档信息
 - **归档日期**：2025-12-18
 - **分支名称**：Demo4-001
-- **最新提交ID**：c1a4d34c48eba89a0da675bc539c7c8870c61e6e
+- **最新提交ID**：db0f162cc21601f261b8f8af5ae4e62ba2f0d789
 - **状态**：已完成并归档
 
 ## 主要变更内容
 
 ### ✨ 新增功能
+- feat: 完成Demo4-002分支功能开发
+- feat: 完成Demo4-001分支功能开发
 - feat: 完成Demo4-020分支功能开发
 - feat: 完成Demo4-020分支功能开发
 - feat: 完成Demo4-019分支功能开发
@@ -24,7 +26,6 @@
 - feat: 完成Demo4-013分支功能开发
 - feat: 完成Demo4-012分支功能开发
 - feat: 添加实时输出支持和聊天上下文集成
-- feat: 完成Demo4-008分支功能开发
 
 ### 🐛 Bug 修复
 - fix: 修复 __dirname 问题，恢复需求文档生成功能
@@ -37,7 +38,6 @@
 - Merge pull request #4 from Andyirong/Demo4-022
 - chore: 禁用sourcemap以消除第三方包警告
 - 清理多余文件：删除旧的归档目录和不需要的脚本文件
-- Merge pull request #3 from Andyirong/Demo4-009
 
 ## 文件变更统计
 - 修改文件数：0 个

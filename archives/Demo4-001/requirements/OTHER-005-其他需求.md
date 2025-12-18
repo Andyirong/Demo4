@@ -4,7 +4,7 @@
 
 - **需求类型**: 其他需求
 - **生成时间**: 2025-12-18
-- **相关分支**: Demo4-002
+- **相关分支**: Demo4-001
 - **文档编号**: OTHER-005
 
 ## 会话上下文
@@ -18,7 +18,7 @@
 
 ## 相关提交
 
-- c1a4d34 - (origin/main, main) Merge branch 'Demo4-022' into main
+- c1a4d34 - Merge branch 'Demo4-022' into main
 - 333793e - Merge pull request #4 from Andyirong/Demo4-022
 - 1492146 - chore: 禁用sourcemap以消除第三方包警告
 - a3b5880 - 清理多余文件：删除旧的归档目录和不需要的脚本文件
@@ -33,7 +33,7 @@
 
 基于提交历史分析，此需求涉及以下功能点：
 
-- (origin/main, main) Merge branch 'Demo4-022' into main
+- Merge branch 'Demo4-022' into main
 - Merge pull request #4 from Andyirong/Demo4-022
 - chore: 禁用sourcemap以消除第三方包警告
 - 清理多余文件：删除旧的归档目录和不需要的脚本文件
