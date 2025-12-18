@@ -516,10 +516,15 @@ ${date}
 
   // 主执行函数
   async execute(args: SkillArgs = {}): Promise<any> {
-    const { push = true, newBranch = true, description = '', branchName } = args;
+    const { push = true, newBranch = true, description = '', branchName, requirements = true } = args;
 
     try {
-      console.log('\n🚀 开始分支归档流程...\n');
+      console.log('\n🚀 开始分支归档流程...');
+      console.log('\n📊 归档配置:');
+      console.log(`  - 推送远程: ${push ? '✅ 是' : '❌ 否'}`);
+      console.log(`  - 创建新分支: ${newBranch ? '✅ 是' : '❌ 否'}`);
+      console.log(`  - 生成需求文档: ${requirements ? '✅ 是' : '❌ 否'}`);
+      console.log('');
 
       // 步骤1: 使用指定的分支名或获取当前分支
       const currentBranch = branchName || await this.getCurrentBranch();
