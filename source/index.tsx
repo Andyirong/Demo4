@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { PrivyProvider } from '@privy-io/react-auth';
 import App from './App';
+import { PrivyProvider } from '@privy-io/react-auth';
 
-const PRIVY_APP_ID = (import.meta.env?.VITE_PRIVY_APP_ID) || 'cmayugmew01guju0m8b6nrsnv';
+// 添加调试日志
+console.log('App starting...');
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -14,18 +15,17 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <PrivyProvider
-      appId={PRIVY_APP_ID}
+      appId="cmayugmew01guju0m8b6nrsnv"
+      clientId="client-WY6LLc5LfQiMXdMzrVy88RnPQQQgPgGxq95ogMz1eN3ZS"
       config={{
         appearance: {
           theme: 'dark',
-          accentColor: '#00d4ff',
+          accentColor: '#6366f1'
         },
-        loginMethods: ['email', 'google', 'twitter', 'discord', 'wallet'],
         embeddedWallets: {
-          ethereum: {
-            createOnLogin: 'users-without-wallets',
-          },
+          createOnLogin: 'all-users'
         },
+        loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord']
       }}
     >
       <App />

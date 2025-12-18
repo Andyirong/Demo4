@@ -5,6 +5,11 @@ import { Wallet, Loader2, LogOut } from 'lucide-react';
 export const PrivyWalletButton: React.FC = () => {
   const { ready, authenticated, user, login, logout } = usePrivy();
 
+  // 添加调试日志
+  console.log('PrivyWalletButton - ready:', ready);
+  console.log('PrivyWalletButton - authenticated:', authenticated);
+  console.log('PrivyWalletButton - user:', user);
+
   // 格式化钱包地址
   const formatAddress = (address?: string) => {
     if (!address) return '';
@@ -48,9 +53,20 @@ export const PrivyWalletButton: React.FC = () => {
     );
   }
 
+  const handleLogin = async () => {
+    console.log('开始登录...');
+    try {
+      await login();
+      console.log('登录成功');
+    } catch (error) {
+      console.error('登录失败:', error);
+      alert('登录失败: ' + (error as Error).message);
+    }
+  };
+
   return (
     <button
-      onClick={login}
+      onClick={handleLogin}
       className="neon-glow px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-all text-sm font-medium"
     >
       <Wallet className="w-4 h-4 inline mr-2" />
